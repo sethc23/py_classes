@@ -1,7 +1,7 @@
 
 ### PROBLEM:
 
-Many might have experienced as a software project develops:
+Some might experience a re-occuring pattern in software project development, such as:
 
 - sparse lines of codes become functions,
 - functions become classes,
@@ -9,12 +9,12 @@ Many might have experienced as a software project develops:
 - files/directories become libraries,
 - etc \.\.\.
 
-(hereinafter "*Project Maturation*")
+(hereinafter "*Project Maturation*").
 
-In addition to the substantive challenges raised by the particularities of a project, *Project Maturation* begets it's own type of complexity in a number of ways, some of which currently include:
+In addition to the substantive challenges raised by the particularities of a project, *Project Maturation* begets its own type of complexity in a number of ways, some of which currently include:
 
 - interoperability;
-- function/class/module inter-dependencies, developments and unit-testing;
+- function/class/module inter-dependencies, developments and unit-testing; and
 - code clarity, re-usability and community utility.
 
 ### SOLUTION PROPOSED:
@@ -28,11 +28,7 @@ A method for developing and maintaining a project that:
 
 ### CURRENT IMPLEMENTATION:
 
-Where a module has classes configured similar to the following:
-
-[INSERT GIST LINK HERE](http://)
-
-This solution allows the following:
+Where a module has classes configured similar to **[this Gist](http://gist.github.com/sethc23/9a0020d2f6eb736d07e1)**, the proposed solution allows the following:
 
 ``` python
 from example import Start
