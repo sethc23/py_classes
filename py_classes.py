@@ -13,7 +13,7 @@ def To_Sub_Classes(_self,_parent):
     orig_branch_names                       =   branch[:]
     branch                                  =   [branch[0]] + [it.replace(branch[0]+'_','') for it in branch[1:]]
     # print branch
-    _self.F,_self.T                         =   _parent.F,_parent.T
+    _self.C,_self.F,_self.T                 =   _parent.C,_parent.F,_parent.T
 
     '''
     RE: following conditional:
@@ -24,7 +24,7 @@ def To_Sub_Classes(_self,_parent):
     if not hasattr(_self,branch[1]) and not _self.__class__.__name__==orig_branch_names[1]:
         setattr(                                _self,branch[1],To_Class())
 
-    method_to_base_str                      =   '_'.join( [ it.lower() for it in branch[1:] ])
+    method_to_base_str                      =   '_'.join( [ it for it in branch[1:] ])
     for it in dir(_self):
         _current                            =   getattr(_self,it)
         if type(_current).__name__=='classobj':
@@ -37,9 +37,10 @@ def To_Sub_Classes(_self,_parent):
             else:
                 setattr(                        getattr(_self,branch[1]),
                                                 it,_current(_self))
+            _self.C.update(                 { '%s_%s' % (method_to_base_str,it)   :   _current(_self) } )
 
         elif _current.__class__.__name__=='instancemethod' and not ['_','T'].count(it[0]):
-            _self.F.update(                     { '%s_%s' % (method_to_base_str,it)   :   _current } )
+            _self.F.update(                     { '%s_%s' % (method_to_base_str.lower(),it.lower())   :   _current } )
 
     globals().update(                           _self.T.__dict__)
     return _self
@@ -49,7 +50,7 @@ def To_Class_Dict(_self,dict_list=[],update_globals=True):
     for it in dict_list:
         all_dicts.update(                       it)
 
-    class_objs                              =   ['F','T']
+    class_objs                              =   ['C','F','T']
     # re: class_objs -- F: functions, T: everything else including imported modules
     for it in class_objs:
         if not hasattr(_self,it):
