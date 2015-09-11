@@ -37,18 +37,34 @@ This solution allows the following:
 ``` python
 from example import Start
 x = Start()
-print x.T.guid,'first guid'
-print x.T.user,'user defined by environmental variable'
-new_guid = str(get_guid().hex)[:7]
-x.T.guid = new_guid
-print x.T.guid,'new guid replacing previous guid'
-x.T.guid_2 = str(get_guid().hex)[:7]
-print x.T.guid_2,'another new guid, this time as new object'
 
-# Convert dictionary to class object
+print 'Variables Defined in dictionary ("D")'
+print '\t',x.T.guid,'first guid'
+print '\t',x.T.user,'user defined by environmental variable'
+
+# Redefine Objects
+old_guid = x.T.guid
+x.T.guid = str(x.T.get_guid().hex)[:7]
+assert x.T.guid != old_guid
+
+# Add New Objects
+assert not hasattr(x.T,'guid_2')
+x.T.guid_2 = str(x.T.get_guid().hex)[:7]
+assert hasattr(x.T,'guid_2')
+
+# Dictionaries Added as Objects by Default
 d = {'one':1,'two':2}
+assert not hasattr(x.T,'new_dictionary')
 x.T.new_dictionary = d
-print x.T.one
+assert hasattr(x.T,'new_dictionary')
+
+# Integrate Dictionaries
+d = {'one':1,'two':2}
+assert not hasattr(x.T,'one') and not hasattr(x.T,'two')
+x.T.update(d)
+assert hasattr(x.T,'one') and hasattr(x.T,'two')
+assert x.T.one + x.T.two == 3
+
 ```
 
 Running the following illustrates methods for accessing components of other objects:
