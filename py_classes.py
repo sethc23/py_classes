@@ -1,15 +1,5 @@
 
-from ipdb import set_trace as i_trace
-
 def To_Sub_Classes(_self,_parent):
-    # check if exists
-        # if so, add next number that doesn't exist
-    # meanwhile, keep a thread of '_parent'+'_parent'+'_parent'+ ... +'_cls' ,
-    #   where '_parent'==_parent.__name__)
-
-    # self.C.One.Alpha.funct_1()
-    # self.F.one_alpha_funct_1()
-
     _self._parent                           =   _parent
 
     # Create branch for current object
@@ -17,67 +7,41 @@ def To_Sub_Classes(_self,_parent):
     while hasattr(tmp,'_parent'):
         branch.append(                          tmp.__class__.__name__)
         tmp                                 =   tmp._parent
-        depth                               +=  1
+        depth                              +=  1
     branch.append(                              tmp.__class__.__name__)
     branch.reverse()
     orig_branch_names                       =   branch[:]
     branch                                  =   [branch[0]] + [it.replace(branch[0]+'_','') for it in branch[1:]]
-    print branch
-    print depth
-    #_self.C,_self.F,_self.T                 =   _parent.C,_parent.F,_parent.T
+    # print branch
     _self.F,_self.T                         =   _parent.F,_parent.T
-
 
     '''
     RE: following conditional:
-        Action:     where BASE_OBJECT inherits sub-class, create to object to hold all nested sub-sub-class(es).
+        Action:     where BASE_OBJECT inherits sub-class at top-most level, create an object to hold all nested sub-sub-class(es).
         Purpose:    maintain base sub-class access point that is available in any nested function/class of any level
 
     '''
     if not hasattr(_self,branch[1]) and not _self.__class__.__name__==orig_branch_names[1]:
         setattr(                                _self,branch[1],To_Class())
 
-
-
+    method_to_base_str                      =   '_'.join( [ it.lower() for it in branch[1:] ])
     for it in dir(_self):
         _current                            =   getattr(_self,it)
-        # print it
-        # i_trace()
         if type(_current).__name__=='classobj':
-            # print 'cond_1', '_self.%s.%s' % (branch[1],it)
 
             # where first-level sub-class, initiate objects in sub-class
             if _self.__class__.__name__==orig_branch_names[1]:
                 setattr(                        _self,it,_current(_self))
+
             # where _self inherits sub-class, add sub-class to branch
             else:
                 setattr(                        getattr(_self,branch[1]),
                                                 it,_current(_self))
 
-
-
         elif _current.__class__.__name__=='instancemethod' and not ['_','T'].count(it[0]):
-            # print 'cond_2'
-            _self.T.update(                     { it                    :   _current } )
+            _self.F.update(                     { '%s_%s' % (method_to_base_str,it)   :   _current } )
 
-        # if hasattr(_self._parent,'Functions'):
-        # if it=='Functions':
-        #     i_trace()
-
-        # BASE_OBJ = _self
-        # for i in range(depth-1):
-        #     BASE_OBJ = getattr(BASE_OBJ,'_parent')
-        # if hasattr(BASE_OBJ,'Functions') and hasattr(BASE_OBJ.Functions,'Functions'):
-        #     i_trace()
-        a=0
     globals().update(                           _self.T.__dict__)
-
-    # BASE_OBJ = _self
-    # for i in range(depth-1):
-    #     BASE_OBJ = getattr(BASE_OBJ,'_parent')
-    # if hasattr(BASE_OBJ,'Functions') and hasattr(BASE_OBJ.Functions,'Functions'):
-    #     i_trace()
-
     return _self
 
 def To_Class_Dict(_self,dict_list=[],update_globals=True):
