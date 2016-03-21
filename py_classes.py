@@ -72,9 +72,13 @@ class To_Class:
         vs.
     Object Class:   D.some_item
     """
-    def __init__(self, init=None):
+    def __init__(self, init=None,recursive=False):
         if init is not None:
             self.__dict__.update(init)
+        if recursive:
+            for k,v in self.__dict__.items():
+                if type(v)==dict:
+                    setattr(self,k,To_Class(v))
 
     def __allitems__(self):
         return self.__dict__.keys()
@@ -102,6 +106,12 @@ class To_Class:
 
     def __repr__(self):
         return repr(self.__dict__)
+    
+    def _has_key(self,key):
+        return self.__dict__.has_key(key)
+
+    def _update(self,upd):
+        return self.__init__(upd)
 
     def update(self,upd):
         return self.__init__(upd)
