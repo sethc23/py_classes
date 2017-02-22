@@ -108,6 +108,9 @@ class To_Class:
         return repr(self.__dict__)
     
     def _has_key(self,key):
+        return self.has_key(key)
+
+    def has_key(self,key):
         return self.__dict__.has_key(key)
 
     def _update(self,upd):
