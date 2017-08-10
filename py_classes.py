@@ -13,8 +13,12 @@ def To_Sub_Classes(_self,_parent):
     orig_branch_names                       =   branch[:]
     branch                                  =   [branch[0]] + [it.replace(branch[0]+'_','') for it in branch[1:]]
     # print branch
-    _self.C,_self.F,_self.T                 =   _parent.C,_parent.F,_parent.T
-
+    if hasattr(_self, 'C'):
+        _self.C                             =   _parent.C
+    if hasattr(_self, 'F'):
+        _self.F                             =   _parent.F
+    if hasattr(_self, 'T'):
+        _self.T                             =   _parent.T
     '''
     RE: following conditional:
         Action:     where BASE_OBJECT inherits sub-class at top-most level, create an object to hold all nested sub-sub-class(es).
@@ -37,10 +41,12 @@ def To_Sub_Classes(_self,_parent):
             else:
                 setattr(                        getattr(_self,branch[1]),
                                                 it,_current(_self))
-            _self.C.update(                 { '%s_%s' % (method_to_base_str,it)   :   _current(_self) } )
+            if hasattr(_self, 'C'):
+                _self.C.update(                 { '%s_%s' % (method_to_base_str,it)   :   _current(_self) } )
 
         elif _current.__class__.__name__=='instancemethod' and not ['_','T'].count(it[0]):
-            _self.F.update(                     { '%s_%s' % (method_to_base_str.lower(),it.lower())   :   _current } )
+            if hasattr(_self, 'F'):
+                _self.F.update(                     { '%s_%s' % (method_to_base_str.lower(),it.lower())   :   _current } )
 
     globals().update(                           _self.T.__dict__)
     return _self
@@ -106,7 +112,7 @@ class To_Class:
 
     def __repr__(self):
         return repr(self.__dict__)
-    
+
     def _has_key(self,key):
         return self.has_key(key)
 
